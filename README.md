@@ -56,14 +56,14 @@ fetch-archive, fetch-posts, paid capture (browser session), coverage, build-pack
 
 ## Source text
 
-The posts behind the quotes are not in this repo. They are Owen Scott Muir's writing, and some of it is paid. Each quote on the site stays short and links to its post.
+The posts behind the quotes are not in this repo. They are Owen Scott Muir's writing, and some of it is paid. **Paid posts have been removed from the public repo.** Each quote on the site stays short and links to its post.
 
 The site, the tests and `pnpm build` do not need the text. `pnpm validate` uses it to check every quote against its post. Without it, validate says so in one line and skips that check.
 
 To fetch it again, run the first steps of the pipeline above:
 
 - `pnpm data:posts` fetches the free posts into `data/raw/posts/`. It makes one request a second, so it takes about 15 minutes. It reads `data/raw/archive.json`, which is committed.
-- Paid posts need your own paid subscription to The Frontier Psychiatrists. Read them in your own logged-in browser and save each body into `data/raw/paid/` with `pnpm data:receiver` or `scripts/save-post-text.ts`. `prompts/paid-capture.md` has the steps. The scripts never read your cookies.
+- Paid posts are not in the repo and you cannot fetch them without your own paid subscription to The Frontier Psychiatrists. Read them in your own logged-in browser and save each body into `data/raw/paid/` with `pnpm data:receiver` or `scripts/save-post-text.ts`. `prompts/paid-capture.md` has the steps. The scripts never read your cookies.
 - `pnpm data:coverage` checks what you have against the archive. Run it after the fetch. With no text it rewrites `data/raw/coverage.json` as all missing, and `git restore data/raw/coverage.json` puts it back.
 - `pnpm exec tsx scripts/build-packets.ts` cuts the text into the census packets in `data/raw/packets/`.
 
