@@ -7,7 +7,7 @@ export const SUBJECT = "interventional psychiatry and psychedelic medicine";
 /** Three homes: the masthead subject popover, the About lede and metadata.description. */
 export const TAGLINE = "Quoted, dated predictions scored against public outcomes under one written method. Every score links to the words, the rule and the evidence.";
 
-export const REPO_URL = "https://github.com/itsmartinwho/psych-forecast-ledger";
+export const REPO_URL = "https://github.com/itsmartinwho/psychiatry-pundit-scorer";
 
 export const METHOD_PATH = "/methodology";
 

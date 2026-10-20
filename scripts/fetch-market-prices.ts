@@ -15,7 +15,7 @@ const SLUGS: Record<string, string> = {
 };
 
 async function getJson(url: string): Promise<unknown> {
-  const r = await fetch(url, { headers: { accept: "application/json", "user-agent": "psych-forecast-ledger/1.0 (research; contact via repository)" } });
+  const r = await fetch(url, { headers: { accept: "application/json", "user-agent": "psychiatry-pundit-scorer/1.0 (research; contact via repository)" } });
   if (!r.ok) throw new Error(`${r.status} ${url}`);
   return r.json();
 }
