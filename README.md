@@ -17,6 +17,7 @@ Each person's number is a Brier score on checkable claims. A claim is admitted w
 - `data/statements/` the census with its final status per forecaster; `data/intake/` admitted items and coder B's independent fields; `data/intake/freeze.json` hashes.
 - `data/registry/` event registry, outcomes (one per event), rechecks, ground-truth timeline.
 - `data/generated/scores.json` the committed score snapshot; `scripts/check-drift.ts` fails the build when it is stale.
+- `data/raw/` the archive list, the paid manifest, the coverage list and the packet indexes. The post text itself is fetched locally and is not committed (see Source text).
 - `lib/score/` pure scoring library (Brier, cluster bootstrap, Wilson, calibration, kappa, panels, leaderboard); `lib/data/` schemas, loader, derive layer.
 - `components/charts/` hand-written SVG charts with pure layout functions; `app/` pages.
 - `scripts/` and `scripts/pipeline/` data collection and the coding pipeline; `prompts/` the finder, coder, consolidation, resolver and recheck instructions.
@@ -52,6 +53,21 @@ The pages follow `docs/ux-spec.md`: a masthead with the site name and subject, o
 ## Pipeline order
 
 fetch-archive, fetch-posts, paid capture (browser session), coverage, build-packets, census extraction (agents), census-merge, import-timeline, import-comparators, build-coding-packets, coder A and coder B (agents), prefilter-audit (coder B's admission check of the set-aside sample), consolidate-registry prep, assemble and apply (a grouping agent with the scope gate, then entry-writing agents, in between), build-tiebreak-packet, tiebreak coder C (agent), intake-merge, freeze, build-resolution-packets, resolver (agents), apply-outcomes, build-recheck-packets, rechecker (agents), apply-rechecks, snapshot, build. Every script appends to `data/audit/log.jsonl`.
+
+## Source text
+
+The posts behind the quotes are not in this repo. They are Owen Scott Muir's writing, and some of it is paid. Each quote on the site stays short and links to its post.
+
+The site, the tests and `pnpm build` do not need the text. `pnpm validate` uses it to check every quote against its post. Without it, validate says so in one line and skips that check.
+
+To fetch it again, run the first steps of the pipeline above:
+
+- `pnpm data:posts` fetches the free posts into `data/raw/posts/`. It makes one request a second, so it takes about 15 minutes. It reads `data/raw/archive.json`, which is committed.
+- Paid posts need your own paid subscription to The Frontier Psychiatrists. Read them in your own logged-in browser and save each body into `data/raw/paid/` with `pnpm data:receiver` or `scripts/save-post-text.ts`. `prompts/paid-capture.md` has the steps. The scripts never read your cookies.
+- `pnpm data:coverage` checks what you have against the archive. Run it after the fetch. With no text it rewrites `data/raw/coverage.json` as all missing, and `git restore data/raw/coverage.json` puts it back.
+- `pnpm exec tsx scripts/build-packets.ts` cuts the text into the census packets in `data/raw/packets/`.
+
+`data/raw/posts/`, `data/raw/paid/` and the packet `.md` files are git-ignored. The archive list, the paid manifest and batches, the coverage list and the packet indexes stay committed. They hold titles, dates and word counts, and no body text.
 
 ## Licence
 
