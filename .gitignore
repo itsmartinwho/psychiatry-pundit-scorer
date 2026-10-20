@@ -12,3 +12,10 @@ npm-debug.log*
 next-env.d.ts
 /data/raw/*.log
 /.scratch/
+
+# Other people's text. Fetched locally by the scripts, never committed (README: "Source text").
+# The indexes, manifests and coverage list beside them carry no body text and stay tracked.
+/data/raw/posts/
+/data/raw/paid/
+/data/raw/packets/*.md
+/data/raw/comparators/
