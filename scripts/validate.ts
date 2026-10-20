@@ -118,6 +118,7 @@ function referentialRules(ds: Dataset, root: string, freeze: FreezeRelease[], er
   // statements
   const rawText = rawTextReader(root);
   let rawChecked = 0;
+  const rawMissing: string[] = [];
   for (const d of duplicates(ds.statements.map((s) => s.id))) err(`statements [${d}]: duplicate id`);
   for (const s of ds.statements) {
     const file = `statements/${s.forecaster}.json`;
@@ -129,13 +130,18 @@ function referentialRules(ds: Dataset, root: string, freeze: FreezeRelease[], er
     if (s.status === "admitted" && !items.has(s.id)) err(`${file} [${s.id}]: admitted statement has no intake item`);
     if (s.source.post_slug) {
       const text = rawText(s.source.post_slug);
-      if (text === null) warn(`${file} [${s.id}]: raw post ${s.source.post_slug} not found; quote unchecked`);
+      if (text === null) rawMissing.push(`${file} [${s.id}]: raw post ${s.source.post_slug} not found; quote unchecked`);
       else {
         rawChecked += 1;
         if (!quoteFound(s.quote, text)) err(`${file} [${s.id}]: quote is not in raw post ${s.source.post_slug}`);
       }
     }
   }
+
+  // The source text is not in the repo (README, "Source text"), so a fresh clone has none of it to check
+  // against. Say that once. With any text present, each missing post keeps its own line.
+  if (rawChecked === 0 && rawMissing.length > 0) warn(`no source text in data/raw/posts or data/raw/paid, so ${rawMissing.length} statement quotes were not checked against it (README, "Source text")`);
+  else for (const m of rawMissing) warn(m);
 
   // items
   for (const d of duplicates(ds.items.map((i) => i.id))) err(`intake [${d}]: duplicate id`);
